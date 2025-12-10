@@ -8,10 +8,21 @@ from .models import Candidate
 from .serializers import (
     CandidateUploadSerializer,
     CandidateDetailSerializer,
+    CandidateListSerializer,
 )
 from .services.resume_parser import ResumeParserService
 
 logger = logging.getLogger(__name__)
+
+
+class CandidateListView(APIView):
+    """List all candidates with minimal fields."""
+    
+    def get(self, request, format=None):
+        candidates = Candidate.objects.all()
+        serializer = CandidateListSerializer(candidates, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class CandidateUploadView(APIView):

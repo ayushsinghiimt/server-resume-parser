@@ -13,11 +13,9 @@ from pathlib import Path
 from django.utils import timezone
 from django.conf import settings
 
-# Document parsing
 import PyPDF2
 from docx import Document
 
-# Local imports
 from api.schemas import (
     PersonalInfoSchema,
     EducationSchema,
@@ -55,8 +53,6 @@ class ResumeParserService:
         
         genai.configure(api_key=api_key)
         
-        # Use Google's generativeai directly
-        # Using gemini-2.5-flash - latest stable model with good free tier limits
         self.model = genai.GenerativeModel(
             'gemini-2.5-flash',
             generation_config={
@@ -119,13 +115,11 @@ class ResumeParserService:
         Returns:
             Parsed JSON dictionary
         """
-        # Try to parse directly first
         try:
             return json.loads(response_text)
         except json.JSONDecodeError:
             pass
         
-        # Try to extract JSON from markdown code blocks
         json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', response_text, re.DOTALL)
         if json_match:
             try:
@@ -133,7 +127,6 @@ class ResumeParserService:
             except json.JSONDecodeError:
                 pass
         
-        # Try to find JSON object in the text
         json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
         if json_match:
             try:
@@ -358,16 +351,13 @@ Response (JSON only):"""
             ParsedResumeSchema with all extracted data
         """
         try:
-            # Update status to processing
             candidate.parsing_status = 'processing'
             candidate.save()
             
-            # Extract text from file
             file_path = candidate.resume_file.path
             logger.info(f"Parsing resume from: {file_path}")
             text = self.extract_text(file_path)
             
-            # Parse each section with separate Gemini calls
             personal_info = self.parse_personal_info(text)
             education = self.parse_education(text)
             experience = self.parse_experience(text)
@@ -375,7 +365,6 @@ Response (JSON only):"""
             projects = self.parse_projects(text)
             certifications = self.parse_certifications(text)
             
-            # Create complete parsed resume
             parsed_data = ParsedResumeSchema(
                 personal_info=personal_info,
                 education=education,
@@ -411,7 +400,6 @@ Response (JSON only):"""
             Updated Candidate instance
         """
         try:
-            # Update candidate personal info
             personal = parsed_data.personal_info
             candidate.name = personal.name
             candidate.email = personal.email or ''
@@ -424,7 +412,6 @@ Response (JSON only):"""
             candidate.parsing_status = 'completed'
             candidate.save()
             
-            # Save education
             for edu in parsed_data.education:
                 Education.objects.create(
                     candidate=candidate,
@@ -436,7 +423,6 @@ Response (JSON only):"""
                     description=edu.description or '',
                 )
             
-            # Save experience
             for exp in parsed_data.experience:
                 Experience.objects.create(
                     candidate=candidate,
@@ -448,7 +434,6 @@ Response (JSON only):"""
                     skills_used=exp.skills_used or [],
                 )
             
-            # Save skills
             for skill in parsed_data.skills:
                 Skill.objects.create(
                     candidate=candidate,
@@ -457,7 +442,6 @@ Response (JSON only):"""
                     category=skill.category or '',
                 )
             
-            # Save projects
             for project in parsed_data.projects:
                 Project.objects.create(
                     candidate=candidate,
@@ -469,7 +453,6 @@ Response (JSON only):"""
                     end_date=project.end_date or '',
                 )
             
-            # Save certifications
             for cert in parsed_data.certifications:
                 Certification.objects.create(
                     candidate=candidate,

@@ -9,6 +9,20 @@ from .models import (
 )
 
 
+class CandidateListSerializer(serializers.ModelSerializer):
+    """Serializer for listing candidates with minimal fields."""
+    company = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Candidate
+        fields = ['id', 'name', 'email', 'company', 'parsing_status']
+    
+    def get_company(self, obj):
+        latest_experience = obj.experience.first()
+        return latest_experience.company if latest_experience else None
+
+
+
 class CandidateUploadSerializer(serializers.ModelSerializer):
     """Serializer for uploading resumes."""
     class Meta:
