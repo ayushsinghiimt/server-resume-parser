@@ -10,7 +10,14 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-this-in-production-
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# Add Render to ALLOWED_HOSTS
+ALLOWED_HOSTS = ['*'] # For simplicity in this demo, allow all. For prod, use ['.onrender.com', 'localhost']
+
+# CSRF Trusted Origins (Required for Render HTTPS)
+CSRF_TRUSTED_ORIGINS = [
+    'https://server-resume-parser.onrender.com',
+    'https://*.onrender.com' # Wildcard fallback
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
