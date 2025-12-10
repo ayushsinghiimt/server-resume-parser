@@ -30,6 +30,9 @@ class Candidate(models.Model):
         help_text="AI confidence score for parsing quality (0.0 to 1.0)"
     )
     
+    aadhar_document = models.FileField(upload_to='documents/aadhar/', null=True, blank=True)
+    pan_document = models.FileField(upload_to='documents/pan/', null=True, blank=True)
+    
     name = models.CharField(max_length=255, blank=True)
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=50, blank=True)

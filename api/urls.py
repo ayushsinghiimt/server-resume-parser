@@ -4,6 +4,7 @@ from .views import (
     CandidateDetailView,
     CandidateStatusView,
     CandidateListView,
+    DocumentUploadView,
 )
 
 urlpatterns = [
@@ -11,5 +12,5 @@ urlpatterns = [
     path('candidates/upload/', CandidateUploadView.as_view(), name='candidate-upload'),
     path('candidates/<int:candidate_id>/', CandidateDetailView.as_view(), name='candidate-detail'),
     path('candidates/<int:candidate_id>/status/', CandidateStatusView.as_view(), name='candidate-status'),
+    path('candidates/<int:candidate_id>/submit-documents/', DocumentUploadView.as_view(), name='document-upload'),
 ]
-

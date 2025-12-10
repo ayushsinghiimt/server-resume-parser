@@ -9,10 +9,39 @@ from .serializers import (
     CandidateUploadSerializer,
     CandidateDetailSerializer,
     CandidateListSerializer,
+    DocumentUploadSerializer,
 )
 from .services.resume_parser import ResumeParserService
 
 logger = logging.getLogger(__name__)
+
+
+class DocumentUploadView(APIView):
+    """Upload identity documents for a candidate."""
+    parser_classes = [MultiPartParser, FormParser]
+    
+    def post(self, request, candidate_id, format=None):
+        try:
+            candidate = Candidate.objects.get(id=candidate_id)
+        except Candidate.DoesNotExist:
+            return Response(
+                {'error': 'Candidate not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        serializer = DocumentUploadSerializer(
+            candidate,
+            data=request.data,
+            partial=True
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
+            detail_serializer = CandidateDetailSerializer(candidate, context={'request': request})
+            return Response(detail_serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class CandidateListView(APIView):

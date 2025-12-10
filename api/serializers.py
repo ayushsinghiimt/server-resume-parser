@@ -22,6 +22,14 @@ class CandidateListSerializer(serializers.ModelSerializer):
         return latest_experience.company if latest_experience else None
 
 
+class DocumentUploadSerializer(serializers.ModelSerializer):
+    """Serializer for uploading identity documents."""
+    class Meta:
+        model = Candidate
+        fields = ['aadhar_document', 'pan_document']
+
+
+
 
 class CandidateUploadSerializer(serializers.ModelSerializer):
     """Serializer for uploading resumes."""
@@ -93,6 +101,7 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
             'parsing_status', 'parsing_error', 'confidence_score',
             'name', 'email', 'phone', 'location',
             'linkedin_url', 'github_url', 'summary',
+            'aadhar_document', 'pan_document',
             'education', 'experience', 'skills', 
             'projects', 'certifications'
         ]
