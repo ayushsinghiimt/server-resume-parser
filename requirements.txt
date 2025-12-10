@@ -3,3 +3,16 @@ djangorestframework>=3.14,<4.0
 django-cors-headers>=4.3,<5.0
 python-dotenv>=1.0,<2.0
 Pillow>=10.0,<11.0
+
+# LangChain and AI
+langchain>=0.1.0,<0.2.0
+langchain-google-genai>=0.0.5,<1.0.0
+google-generativeai>=0.3.0,<1.0.0
+
+# Pydantic for validation
+pydantic>=2.0.0,<3.0.0
+pydantic-settings>=2.0.0,<3.0.0
+
+# Document parsing
+PyPDF2>=3.0.0,<4.0.0
+python-docx>=1.0.0,<2.0.0
