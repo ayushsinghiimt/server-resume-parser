@@ -15,7 +15,7 @@ class CandidateListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Candidate
-        fields = ['id', 'name', 'email', 'company', 'parsing_status']
+        fields = ['id', 'name', 'email', 'company', 'parsing_status', 'confidence_score']
     
     def get_company(self, obj):
         latest_experience = obj.experience.first()
@@ -90,7 +90,7 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
         model = Candidate
         fields = [
             'id', 'resume_file', 'created_at', 'parsed_at',
-            'parsing_status', 'parsing_error',
+            'parsing_status', 'parsing_error', 'confidence_score',
             'name', 'email', 'phone', 'location',
             'linkedin_url', 'github_url', 'summary',
             'education', 'experience', 'skills', 
@@ -98,7 +98,7 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             'id', 'created_at', 'parsed_at', 'parsing_status', 
-            'parsing_error'
+            'parsing_error', 'confidence_score'
         ]
 
 

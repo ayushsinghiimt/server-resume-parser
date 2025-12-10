@@ -22,8 +22,14 @@ class Candidate(models.Model):
         default='pending'
     )
     parsing_error = models.TextField(null=True, blank=True)
+    confidence_score = models.DecimalField(
+        max_digits=3, 
+        decimal_places=2, 
+        null=True, 
+        blank=True,
+        help_text="AI confidence score for parsing quality (0.0 to 1.0)"
+    )
     
-    # Personal Information (extracted from resume)
     name = models.CharField(max_length=255, blank=True)
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=50, blank=True)

@@ -16,6 +16,7 @@ class PersonalInfoSchema(BaseModel):
     linkedin_url: Optional[str] = Field(None, description="LinkedIn profile URL")
     github_url: Optional[str] = Field(None, description="GitHub profile URL")
     summary: Optional[str] = Field(None, description="Professional summary or objective")
+    confidence_score: int = Field(description="AI confidence score for this extraction (0-100)")
 
 
 class EducationSchema(BaseModel):
@@ -26,6 +27,7 @@ class EducationSchema(BaseModel):
     end_date: Optional[str] = Field(None, description="End date (YYYY-MM or YYYY) or 'Present'")
     gpa: Optional[str] = Field(None, description="GPA or grade")
     description: Optional[str] = Field(None, description="Relevant coursework, achievements, etc.")
+    confidence_score: int = Field(description="AI confidence score for this entry (0-100)")
 
 
 class ExperienceSchema(BaseModel):
@@ -36,6 +38,7 @@ class ExperienceSchema(BaseModel):
     end_date: Optional[str] = Field(None, description="End date (YYYY-MM or YYYY) or 'Present'")
     description: Optional[str] = Field(None, description="Job responsibilities and achievements")
     skills_used: Optional[List[str]] = Field(None, description="Technologies and skills used in this role")
+    confidence_score: int = Field(description="AI confidence score for this entry (0-100)")
 
 
 class SkillSchema(BaseModel):
@@ -43,6 +46,7 @@ class SkillSchema(BaseModel):
     name: str = Field(description="Skill or technology name")
     proficiency: Optional[str] = Field(None, description="Proficiency level: Beginner, Intermediate, Advanced, Expert")
     category: Optional[str] = Field(None, description="Skill category: Programming, Framework, Tool, Soft Skill, etc.")
+    confidence_score: int = Field(description="AI confidence score for this skill (0-100)")
 
 
 class ProjectSchema(BaseModel):
@@ -53,6 +57,7 @@ class ProjectSchema(BaseModel):
     url: Optional[str] = Field(None, description="Project URL or repository link")
     start_date: Optional[str] = Field(None, description="Project start date")
     end_date: Optional[str] = Field(None, description="Project end date or 'Present'")
+    confidence_score: int = Field(description="AI confidence score for this project (0-100)")
 
 
 class CertificationSchema(BaseModel):
@@ -63,6 +68,7 @@ class CertificationSchema(BaseModel):
     expiry_date: Optional[str] = Field(None, description="Expiry date if applicable")
     credential_id: Optional[str] = Field(None, description="Credential ID or certificate number")
     credential_url: Optional[str] = Field(None, description="URL to verify the credential")
+    confidence_score: int = Field(description="AI confidence score for this certification (0-100)")
 
 
 class ParsedResumeSchema(BaseModel):
