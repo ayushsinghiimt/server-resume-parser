@@ -135,9 +135,23 @@ REST_FRAMEWORK = {
     ],
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS Configuration
+# Note: Allows credentials (cookies) which requires specific origins (no wildcard *)
+CORS_ALLOW_ALL_ORIGINS = False # Must be False when Credentials=True
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:.*$",
+    r"^http://127\.0\.0\.1:.*$",
+    r"^https://.*\.vercel\.app$", # Allow all Vercel deployments
+]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Security Headers for Render (behind proxy)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 CORS_ALLOW_METHODS = [
     'DELETE',
