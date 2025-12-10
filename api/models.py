@@ -32,6 +32,7 @@ class Candidate(models.Model):
     
     aadhar_document = models.FileField(upload_to='documents/aadhar/', null=True, blank=True)
     pan_document = models.FileField(upload_to='documents/pan/', null=True, blank=True)
+    document_request_message = models.TextField(null=True, blank=True, help_text="AI-generated personalized document request email")
     
     name = models.CharField(max_length=255, blank=True)
     email = models.EmailField(blank=True)

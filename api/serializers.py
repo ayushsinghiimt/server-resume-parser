@@ -101,7 +101,7 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
             'parsing_status', 'parsing_error', 'confidence_score',
             'name', 'email', 'phone', 'location',
             'linkedin_url', 'github_url', 'summary',
-            'aadhar_document', 'pan_document',
+            'aadhar_document', 'pan_document', 'document_request_message',
             'education', 'experience', 'skills', 
             'projects', 'certifications'
         ]

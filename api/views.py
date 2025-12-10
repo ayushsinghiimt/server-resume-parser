@@ -43,6 +43,88 @@ class DocumentUploadView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class DocumentRequestView(APIView):
+    """Generate AI-powered personalized document request email."""
+    
+    def post(self, request, candidate_id, format=None):
+        import google.generativeai as genai
+        import os
+        import json
+        
+        try:
+            candidate = Candidate.objects.get(id=candidate_id)
+        except Candidate.DoesNotExist:
+            return Response(
+                {'error': 'Candidate not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        try:
+            api_key = os.getenv('GOOGLE_API_KEY')
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel('gemini-2.5-flash')
+            
+            prompt = f"""Generate a professional and personalized email requesting government ID documents from a job candidate.
+
+Candidate Information:
+Name: {candidate.name or 'Candidate'}
+Email: {candidate.email or 'N/A'}
+Position Applied: {candidate.experience.first().position if candidate.experience.exists() else 'N/A'}
+
+CRITICAL: Return ONLY a valid JSON object with exactly this structure:
+{{
+  "subject": "string - email subject line",
+  "body": "string - full email body with proper formatting, use \\n for line breaks"
+}}
+
+The email should:
+- Be warm and professional
+- Explain that we need Aadhar and PAN documents for verification
+- Mention it's a standard part of the hiring process
+- Provide clear instructions
+- Be personalized with the candidate's name
+- End with a professional signature from "HR Team"
+
+Response (JSON only):"""
+            
+            response = model.generate_content(prompt)
+            response_text = response.text.strip()
+            
+            # Extract JSON from response
+            if '```json' in response_text:
+                json_start = response_text.find('```json') + 7
+                json_end = response_text.find('```', json_start)
+                response_text = response_text[json_start:json_end].strip()
+            elif '```' in response_text:
+                json_start = response_text.find('```') + 3
+                json_end = response_text.find('```', json_start)
+                response_text = response_text[json_start:json_end].strip()
+            
+            email_data = json.loads(response_text)
+            
+            # Format the message for storage
+            message = f"Subject: {email_data['subject']}\n\n{email_data['body']}"
+            
+            candidate.document_request_message = message
+            candidate.save()
+            
+            logger.info(f"Generated document request for candidate {candidate.id}")
+            
+            return Response({
+                'success': True,
+                'message': 'Document request generated successfully',
+                'email': email_data
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Error generating document request: {e}")
+            return Response(
+                {'error': f'Failed to generate request: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+
 
 class CandidateListView(APIView):
     """List all candidates with minimal fields."""
