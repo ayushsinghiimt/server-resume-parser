@@ -16,6 +16,13 @@ from .services.resume_parser import ResumeParserService
 logger = logging.getLogger(__name__)
 
 
+class HealthCheckView(APIView):
+    """Lightweight health check endpoint for serverless cold start detection."""
+    
+    def get(self, request):
+        return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+
+
 class DocumentUploadView(APIView):
     """Upload identity documents for a candidate."""
     parser_classes = [MultiPartParser, FormParser]
